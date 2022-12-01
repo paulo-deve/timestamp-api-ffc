@@ -2,10 +2,12 @@
 // where your node app starts
 
 // init project
+require('dotenv').config()
+
+const moment = require('moment-timezone')
 var express = require('express');
 var app = express();
 
-require('dotenv').config()
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -51,11 +53,15 @@ app.get('/api/:date', (req, res) => {
 })
 
 app.get('/api', (req, res) => {
-  const newDate = new Date(Date.now())
+  const date = new Date(Date.now())
+  const momentDate = moment(date)
+
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const currentTime = momentDate.tz(timezone)
 
   return res.json({
-    unix: newDate.getTime(),
-    utc: newDate.toUTCString()
+    unix: new Date(currentTime).getTime(),
+    utc: new Date(currentTime).toUTCString(),
   })
 })
 
